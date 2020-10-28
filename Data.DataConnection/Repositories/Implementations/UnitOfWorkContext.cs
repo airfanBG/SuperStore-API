@@ -31,6 +31,11 @@ namespace Data.DataConnection.Repositories.Implementations
                 return this.CreateInstance<Product>();
             }
         }
+
+        public IRepository<Seller> Sellers => throw new NotImplementedException();
+
+        public IRepository<Customer> Customers => throw new NotImplementedException();
+
         private IRepository<T> CreateInstance<T>() where T:BaseModel, new()
         {
             if (!this.repositories.ContainsKey(typeof(T)))

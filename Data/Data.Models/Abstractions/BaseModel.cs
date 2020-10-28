@@ -9,10 +9,10 @@ namespace Data.Models.Abstractions
     {
         public BaseModel()
         {
-            Id = Guid.NewGuid().ToString().Substring(0, 5);
+            Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } 
         public DateTime? ModifiedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
     }

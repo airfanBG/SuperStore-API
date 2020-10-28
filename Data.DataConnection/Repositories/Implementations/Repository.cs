@@ -1,5 +1,6 @@
 ﻿using Data.DataConnection.Repositories.Interfaces;
 using Data.Models.Abstractions;
+using Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;

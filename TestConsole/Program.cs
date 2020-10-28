@@ -10,7 +10,11 @@ namespace TestConsole
         static void Main(string[] args)
         {
             UnitOfWorkContext unitOfWorkContext = new UnitOfWorkContext(new ApplicationDbContext());
+
+
             var res=unitOfWorkContext.Products.GetAll().ToList();
+
+           
         }
     }
 }
