@@ -1,7 +1,6 @@
 ﻿using Data.DataConnection;
 using Data.Services.DtoModels;
 using Data.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
