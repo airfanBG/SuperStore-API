@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data.DataConnection\Data.DataConnection.csproj" />
     <ProjectReference Include="..\Data.DataConnection\Data.DataConnection.csproj" />
   </ItemGroup>
 
