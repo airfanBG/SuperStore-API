@@ -1,10 +1,15 @@
-﻿using Data.DataConnection;
+﻿
+using Data.DataConnection;
 using Data.Services.DtoModels;
 using Data.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Data.Services.Identity
@@ -39,7 +44,17 @@ namespace Data.Services.Identity
                             UserName=model.Username,
                             Password=hashedPassword
                         });
-                        _dbContext.SaveChanges();
+                       // _dbContext.SaveChanges();
+                    }
+                    var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    var file = Path.Combine(path, "secrets.json");
+
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        var res = sr.ReadToEnd();
+                        var jsonSalt = (JObject)JsonConvert.DeserializeObject(res);
+                        var salt = jsonSalt["tokenSalt"].Value<string>();
+
                     }
                 }
                 
@@ -86,6 +101,7 @@ namespace Data.Services.Identity
                 }
                 return false;
             }
+           
             return false;
         }
     }
