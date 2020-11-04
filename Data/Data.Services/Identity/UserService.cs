@@ -3,13 +3,16 @@ using Data.DataConnection;
 using Data.Services.DtoModels;
 using Data.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 namespace Data.Services.Identity
@@ -22,12 +25,35 @@ namespace Data.Services.Identity
         {
             _dbContext = dbContext;
         }
-        public void Login(UserLoginDto model)
+        public string Login(UserLoginDto model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (_dbContext)
+                {
+                    var checkUser = _dbContext.Users.FirstOrDefault(x => x.UserName == model.Username);
+                    if (checkUser!=null)
+                    {
+                        var hashInputPass = Hash(model.Password);
+                        if (hashInputPass==checkUser.Password)
+                        {
+
+
+                            return "token";
+                        }
+                        return "";
+                    }
+                    return "";
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
 
-        public void Register(UserRegisterDto model)
+        public string Register(UserRegisterDto model)
         {
             try
             {
@@ -54,27 +80,41 @@ namespace Data.Services.Identity
                         var res = sr.ReadToEnd();
                         var jsonSalt = (JObject)JsonConvert.DeserializeObject(res);
                         var salt = jsonSalt["secret"].Value<string>();
+                        var issuer = jsonSalt["Issuer"].Value<string>();
+                        var audience = jsonSalt["audience"].Value<string>();
+                        var accessExpiration =jsonSalt["AccessExpiration"].Value<double>();
 
+                        var claim = new List<Claim>()
+                                {
+                                  new Claim(ClaimTypes.Name,model.Username),
+
+                                };
+                        string token = string.Empty;
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
+                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                        var jwtToken = new JwtSecurityToken(
+                            issuer,
+                            audience,
+                            claim,
+                            expires: DateTime.Now.AddMinutes(accessExpiration),
+                            signingCredentials: credentials
+                        );
+
+                        token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                        return token;
                     }
+                    
                 }
-                
+                return "";
             }
             catch (Exception e)
             {
 
                 throw e;
             }
-           //1.Get info from model
-           //2.Check if user exist in Db
-             //2.1 If exists
-                //-return user exists
-            //2.2 If not exists
-                //2.2.1 Register user Password-hashing (algo)
-                //2.2.2 Save user
-                //2.2.3 Generate token
-                //2.2.4 Return token
-
-
+          
         }
         private string Hash(string password)
         {
