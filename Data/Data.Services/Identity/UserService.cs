@@ -53,7 +53,7 @@ namespace Data.Services.Identity
                     {
                         var res = sr.ReadToEnd();
                         var jsonSalt = (JObject)JsonConvert.DeserializeObject(res);
-                        var salt = jsonSalt["tokenSalt"].Value<string>();
+                        var salt = jsonSalt["secret"].Value<string>();
 
                     }
                 }
