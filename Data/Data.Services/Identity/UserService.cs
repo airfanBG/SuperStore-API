@@ -1,9 +1,16 @@
 ﻿using Data.DataConnection;
 using Data.Services.DtoModels;
 using Data.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 namespace Data.Services.Identity
@@ -11,7 +18,7 @@ namespace Data.Services.Identity
     public class UserService : IUserService
     {
         private ApplicationDbContext _dbContext;
-        private readonly TokenModel _tokenManagement;
+
         public UserService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -21,13 +28,13 @@ namespace Data.Services.Identity
             throw new NotImplementedException();
         }
 
-        public void Register(UserRegisterDto model)
+        public string Register(UserRegisterDto model)
         {
             try
             {
                 bool passwordValidation = CheckUserPassword(model);
 
-                if (passwordValidation==true)
+                if (passwordValidation == true)
                 {
                     string hashedPassword = Hash(model.Password);
 
@@ -35,30 +42,56 @@ namespace Data.Services.Identity
                     {
                         _dbContext.Users.Add(new Models.Models.User()
                         {
-                            UserName=model.Username,
-                            Password=hashedPassword
+                            UserName = model.Username,
+                            Password = hashedPassword
                         });
-                        _dbContext.SaveChanges();
+                        //_dbContext.SaveChanges();
                     }
+                    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string file = Path.Combine(path, "tokenconfig.json");
+                    string salt;
+                    string issuer;
+                    string audience;
+                    double accessExpiration;
+
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        string content = sr.ReadToEnd();
+                        JObject jsonObject = (JObject)JsonConvert.DeserializeObject(content);
+                        salt = jsonObject["secret"].Value<string>();
+                        issuer = jsonObject["Issuer"].Value<string>();
+                        audience = jsonObject["audience"].Value<string>();
+                        accessExpiration = jsonObject["AccessExpiration"].Value<double>();
+
+                    }
+                    var claim = new List<Claim>()
+                                {
+                                  new Claim(ClaimTypes.Name,model.Username),
+
+                                };
+                    string token = string.Empty;
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
+                    var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var jwtToken = new JwtSecurityToken(
+                        issuer,
+                        audience,
+                        claim,
+                        expires: DateTime.Now.AddMinutes(accessExpiration),
+                        signingCredentials: credentials
+                    );
+
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                    return token;
                 }
-                
+                return string.Empty;
             }
             catch (Exception e)
             {
 
                 throw e;
             }
-           //1.Get info from model
-           //2.Check if user exist in Db
-             //2.1 If exists
-                //-return user exists
-            //2.2 If not exists
-                //2.2.1 Register user Password-hashing (algo)
-                //2.2.2 Save user
-                //2.2.3 Generate token
-                //2.2.4 Return token
-
-
         }
         private string Hash(string password)
         {
@@ -77,9 +110,9 @@ namespace Data.Services.Identity
                            model.Password.Any(c => char.IsLetter(c)) &&
                            model.Password.Any(c => char.IsDigit(c)) &&
                            model.Password.Any(c => char.IsSymbol(c));
-            if (result==true)
+            if (result == true)
             {
-                if (model.Password==model.ConfirmPassword)
+                if (model.Password == model.ConfirmPassword)
                 {
                     return true;
                 }
