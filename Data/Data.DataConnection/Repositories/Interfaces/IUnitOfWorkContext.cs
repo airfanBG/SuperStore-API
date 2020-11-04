@@ -9,7 +9,7 @@ namespace Data.DataConnection.Repositories.Interfaces
     public interface IUnitOfWorkContext
     {
         public IRepository<User> Users { get; }
-        public IRepository<Product> Products { get; }
+        //public IRepository<Product> Products { get; }
         public IRepository<Seller> Sellers { get; }
         public IRepository<Customer> Customers { get; }
     }

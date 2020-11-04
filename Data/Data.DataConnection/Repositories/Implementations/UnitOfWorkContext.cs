@@ -24,13 +24,13 @@ namespace Data.DataConnection.Repositories.Implementations
                 return this.CreateInstance<User>();
             }
         }
-        public IRepository<Product> Products
-        {
-            get
-            {
-                return this.CreateInstance<Product>();
-            }
-        }
+        //public IRepository<Product> Products
+        //{
+        //    get
+        //    {
+        //        return this.CreateInstance<Product>();
+        //    }
+        //}
 
         public IRepository<Seller> Sellers => throw new NotImplementedException();
 

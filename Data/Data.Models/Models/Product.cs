@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace Data.Models.Models
         public string ProductName { get; set; }
         [Required]
         public decimal ProductPrice { get; set; }
-        
+     
         public int CurrentCountInWarehouse { get; set; }
         
         public int MinimumCountAlert
@@ -33,5 +34,6 @@ namespace Data.Models.Models
             }
         }
         public ICollection<SellerCustomer> SellerCustomers { get; set; }
+        public ICollection<Image> Images { get; set; }
     }
 }

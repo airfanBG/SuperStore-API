@@ -44,7 +44,7 @@ namespace Data.Services.Identity
                             UserName=model.Username,
                             Password=hashedPassword
                         });
-                       // _dbContext.SaveChanges();
+                        _dbContext.SaveChanges();
                     }
                     var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     var file = Path.Combine(path, "secrets.json");

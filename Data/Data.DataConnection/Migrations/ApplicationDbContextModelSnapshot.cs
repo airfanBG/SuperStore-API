@@ -47,6 +47,33 @@ namespace Data.DataConnection.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Data.Models.Models.Image", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Image");
+                });
+
             modelBuilder.Entity("Data.Models.Models.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -189,6 +216,13 @@ namespace Data.DataConnection.Migrations
                     b.HasOne("Data.Models.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Data.Models.Models.Image", b =>
+                {
+                    b.HasOne("Data.Models.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("Data.Models.Models.Seller", b =>
