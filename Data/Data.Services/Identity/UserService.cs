@@ -37,8 +37,6 @@ namespace Data.Services.Identity
                         var hashInputPass = Hash(model.Password);
                         if (hashInputPass==checkUser.Password)
                         {
-
-
                             return "token";
                         }
                         return "";
