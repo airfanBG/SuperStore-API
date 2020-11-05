@@ -1,6 +1,7 @@
 ﻿
 using Data.DataConnection;
 using Data.DataConnection.Repositories.Implementations;
+using Data.Services.ApiServices;
 using Data.Services.Identity;
 using System;
 using System.Linq;
@@ -17,12 +18,20 @@ namespace TestConsole
             //var res=unitOfWorkContext.Products.GetAll().ToList();
 
             UserService userService = new UserService(new ApplicationDbContext());
-            userService.Register(new Data.Services.DtoModels.UserRegisterDto()
-            {
-                Username = "airfan",
-                Password="a1+",
-                ConfirmPassword="a1+"
-            });
+            //userService.Register(new Data.Services.DtoModels.UserRegisterDto()
+            //{
+            //    Username = "airfan",
+            //    Password="a1+",
+            //    ConfirmPassword="a1+"
+            //});
+            //userService.Login(new Data.Services.DtoModels.UserLoginDto()
+            //{
+            //    Username = "airfan",
+            //    Password = "a1+",
+            //});
+
+            //ProductsService productsService = new ProductsService(new ApplicationDbContext());
+            //var products=productsService.GetAll();
         }
     }
 }

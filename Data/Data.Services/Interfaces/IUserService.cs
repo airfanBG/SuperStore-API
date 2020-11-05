@@ -8,6 +8,6 @@ namespace Data.Services.Interfaces
     public interface IUserService
     {
         public string Register(UserRegisterDto model);
-        public void Login(UserLoginDto model);
+        public string Login(UserLoginDto model);
     }
 }

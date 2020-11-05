@@ -23,75 +23,94 @@ namespace Data.Services.Identity
         {
             _dbContext = dbContext;
         }
-        public void Login(UserLoginDto model)
+        public string Login(UserLoginDto model)
         {
-            throw new NotImplementedException();
+            using (_dbContext)
+            {
+                var user = _dbContext.Users.FirstOrDefault(x => x.UserName == model.Username);
+                if (user != null)
+                {
+                    if (user.Password==Hash(model.Password))
+                    {
+                        var token = TokenGenerator(model.Username);
+
+                        return token;
+                    }
+                }
+                return string.Empty;
+            }
         }
 
         public string Register(UserRegisterDto model)
         {
             try
             {
-                bool passwordValidation = CheckUserPassword(model);
-
-                if (passwordValidation == true)
+                using (_dbContext)
                 {
-                    string hashedPassword = Hash(model.Password);
-
-                    using (_dbContext)
+                    if (_dbContext.Users.FirstOrDefault(x => x.UserName == model.Username) == null)
                     {
-                        _dbContext.Users.Add(new Models.Models.User()
+                        bool passwordValidation = CheckUserPassword(model);
+                        if (passwordValidation == true)
                         {
-                            UserName = model.Username,
-                            Password = hashedPassword
-                        });
-                        //_dbContext.SaveChanges();
+                            string hashedPassword = Hash(model.Password);
+                            _dbContext.Users.Add(new Models.Models.User()
+                            {
+                                UserName = model.Username,
+                                Password = hashedPassword
+                            });
+                            _dbContext.SaveChanges();
+                        }
+                        
+                        return TokenGenerator(model.Username);
                     }
-                    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    string file = Path.Combine(path, "tokenconfig.json");
-                    string salt;
-                    string issuer;
-                    string audience;
-                    double accessExpiration;
-
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        string content = sr.ReadToEnd();
-                        JObject jsonObject = (JObject)JsonConvert.DeserializeObject(content);
-                        salt = jsonObject["secret"].Value<string>();
-                        issuer = jsonObject["Issuer"].Value<string>();
-                        audience = jsonObject["audience"].Value<string>();
-                        accessExpiration = jsonObject["AccessExpiration"].Value<double>();
-
-                    }
-                    var claim = new List<Claim>()
-                                {
-                                  new Claim(ClaimTypes.Name,model.Username),
-
-                                };
-                    string token = string.Empty;
-
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
-                    var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var jwtToken = new JwtSecurityToken(
-                        issuer,
-                        audience,
-                        claim,
-                        expires: DateTime.Now.AddMinutes(accessExpiration),
-                        signingCredentials: credentials
-                    );
-
-                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-                    return token;
+                    return string.Empty;
                 }
-                return string.Empty;
+               
             }
             catch (Exception e)
             {
-
                 throw e;
             }
+        }
+        private string TokenGenerator(string username)
+        {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string file = Path.Combine(path, "tokenconfig.json");
+            string salt;
+            string issuer;
+            string audience;
+            double accessExpiration;
+
+            using (StreamReader sr = new StreamReader(file))
+            {
+                string content = sr.ReadToEnd();
+                JObject jsonObject = (JObject)JsonConvert.DeserializeObject(content);
+                salt = jsonObject["secret"].Value<string>();
+                issuer = jsonObject["Issuer"].Value<string>();
+                audience = jsonObject["audience"].Value<string>();
+                accessExpiration = jsonObject["AccessExpiration"].Value<double>();
+
+            }
+            var claim = new List<Claim>()
+                                {
+                                  new Claim(ClaimTypes.Name,username),
+
+                                };
+           
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var jwtToken = new JwtSecurityToken(
+                issuer,
+                audience,
+                claim,
+                expires: DateTime.Now.AddMinutes(accessExpiration),
+                signingCredentials: credentials
+            );
+            string token =  new JwtSecurityTokenHandler().WriteToken(jwtToken);
+
+            return token;
         }
         private string Hash(string password)
         {
