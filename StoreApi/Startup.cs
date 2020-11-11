@@ -33,7 +33,6 @@ namespace StoreApi
         {
             services.AddControllers();
             services.AddAuthorization();
-
           
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwt =>
