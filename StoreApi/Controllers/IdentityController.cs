@@ -20,9 +20,20 @@ namespace StoreApi.Controllers
         {
             this.userService = userService;
         }
+        [HttpGet]
         public IActionResult Register(UserRegisterDto model)
         {
             var token = userService.Register(model);
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest();
+            }
+            return Ok(token);
+        }
+        [HttpPost]
+        public IActionResult Login(UserLoginDto model)
+        {
+            var token = userService.Login(model);
             if (string.IsNullOrEmpty(token))
             {
                 return BadRequest();
