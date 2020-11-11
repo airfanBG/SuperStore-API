@@ -37,7 +37,8 @@ namespace Data.Services.Identity
                         var hashInputPass = Hash(model.Password);
                         if (hashInputPass==checkUser.Password)
                         {
-                            return "token";
+                            var token = TokenGenerator(model.Username);
+                            return token;
                         }
                         return "";
                     }
@@ -70,40 +71,8 @@ namespace Data.Services.Identity
                         });
                         _dbContext.SaveChanges();
                     }
-                    var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var file = Path.Combine(path, "secrets.json");
 
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        var res = sr.ReadToEnd();
-                        var jsonSalt = (JObject)JsonConvert.DeserializeObject(res);
-                        var salt = jsonSalt["secret"].Value<string>();
-                        var issuer = jsonSalt["Issuer"].Value<string>();
-                        var audience = jsonSalt["audience"].Value<string>();
-                        var accessExpiration =jsonSalt["AccessExpiration"].Value<double>();
-
-                        var claim = new List<Claim>()
-                                {
-                                  new Claim(ClaimTypes.Name,model.Username),
-
-                                };
-                        string token = string.Empty;
-
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
-                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                        var jwtToken = new JwtSecurityToken(
-                            issuer,
-                            audience,
-                            claim,
-                            expires: DateTime.Now.AddMinutes(accessExpiration),
-                            signingCredentials: credentials
-                        );
-
-                        token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-                        return token;
-                    }
-                    
+                    return TokenGenerator(model.Username);
                 }
                 return "";
             }
@@ -113,6 +82,42 @@ namespace Data.Services.Identity
                 throw e;
             }
           
+        }
+        public string TokenGenerator(string userName) 
+        {
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var file = Path.Combine(path, "secrets.json");
+
+            using (StreamReader sr = new StreamReader(file))
+            {
+                var res = sr.ReadToEnd();
+                var jsonSalt = (JObject)JsonConvert.DeserializeObject(res);
+                var salt = jsonSalt["secret"].Value<string>();
+                var issuer = jsonSalt["Issuer"].Value<string>();
+                var audience = jsonSalt["audience"].Value<string>();
+                var accessExpiration = jsonSalt["AccessExpiration"].Value<double>();
+
+                var claim = new List<Claim>()
+                                {
+                                  new Claim(ClaimTypes.Name,userName),
+
+                                };
+                string token = string.Empty;
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(salt));
+                var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var jwtToken = new JwtSecurityToken(
+                    issuer,
+                    audience,
+                    claim,
+                    expires: DateTime.Now.AddMinutes(accessExpiration),
+                    signingCredentials: credentials
+                );
+
+                token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                return token;
+            }
         }
         private string Hash(string password)
         {
