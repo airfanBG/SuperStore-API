@@ -17,7 +17,7 @@ namespace TestConsole
 
             UserService userService = new UserService(new ApplicationDbContext());
             // userService.Register(new Data.Services.DtoModels.UserRegisterDto() { Username = "dd", Password = "a1+", ConfirmPassword = "a1+" });
-            userService.Login(new Data.Services.DtoModels.UserLoginDto()
+           var t= userService.Login(new Data.Services.DtoModels.UserLoginDto()
             {
                 Username = "dd",
                 Password = "a1+"
