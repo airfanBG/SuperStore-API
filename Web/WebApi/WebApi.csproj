@@ -4,5 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.DataConnection\Data.DataConnection.csproj" />
+    <ProjectReference Include="..\..\Data\Data.Services\Data.Services.csproj" />
+  </ItemGroup>
+
 
 </Project>
