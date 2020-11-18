@@ -33,7 +33,7 @@ namespace TestConsole
             //ProductsService productsService = new ProductsService(new ApplicationDbContext());
             //var products=productsService.GetAll();
             SellerService service = new SellerService(new ApplicationDbContext());
-            service.GetTopSellers();
+            service.GetTopSellers(2020,11);
         }
     }
 }

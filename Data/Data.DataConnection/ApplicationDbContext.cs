@@ -23,6 +23,7 @@ namespace Data.DataConnection
         public DbSet<Product> Products { get; set; }
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<SellerCustomer> SellerCustomers { get; set; }
+        public DbSet<SellerProduct> SellerProduct { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
@@ -34,11 +35,54 @@ namespace Data.DataConnection
         {
             // modelBuilder.Entity<SellerProduct>().HasKey(x => new { x.ProductId, x.SellerId });
             //Добавено 18.11
+            
             Manufacturer manufacturer = new Manufacturer()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Test",
                 CreatedAt = DateTime.Now
+            };
+            List<User> users = new List<User>()
+            {
+                new User()
+                {
+                    Id=Guid.NewGuid().ToString(),
+                    UserName="Minka",
+                    Password="123"
+                },
+                new User()
+                {
+                    Id=Guid.NewGuid().ToString(),
+                    UserName="Pesho",
+                     Password="123"
+                },
+                new User()
+                {
+                    Id=Guid.NewGuid().ToString(),
+                    UserName="Gosho",
+                     Password="123"
+                }
+            };
+            List<Seller> sellers = new List<Seller>()
+            {
+                new Seller()
+                {
+                    SellerNumber="1",
+                    UserId=users[0].Id,
+                    
+                },
+                new Seller()
+                {
+                    SellerNumber="2",
+                    UserId=users[1].Id,
+
+                },
+                new Seller()
+                {
+                    SellerNumber="3",
+                    UserId=users[2].Id,
+
+                }
             };
 
             List<Product> products = new List<Product>()
@@ -78,9 +122,26 @@ namespace Data.DataConnection
                       ManufacturerId=manufacturer.Id
                  }
              };
+            List<SellerProduct> sellerProducts = new List<SellerProduct>();
+            for (int i = 0; i < 100; i++)
+            {
+                Random random = new Random();
+                var indexUser = random.Next(0, 2);
+                var indexProduct = random.Next(0, 3);
+                sellerProducts.Add(new SellerProduct()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ProductId = products[indexProduct].Id,
+                    SellerId = sellers[indexUser].Id,
+                    CreatedAt=DateTime.Now
+                });
+            }
 
             modelBuilder.Entity<Manufacturer>().HasData(manufacturer);
+            modelBuilder.Entity<User>().HasData(users);
+            modelBuilder.Entity<Seller>().HasData(sellers);
 
+            modelBuilder.Entity<SellerProduct>().HasData(sellerProducts);
 
             modelBuilder.Entity<Product>().HasData(products);
             base.OnModelCreating(modelBuilder);
