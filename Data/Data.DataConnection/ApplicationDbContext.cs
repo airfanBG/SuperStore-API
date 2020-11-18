@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
@@ -28,7 +29,10 @@ namespace Data.DataConnection
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
-            configurationRoot = new ConfigurationBuilder().SetBasePath(Path.Combine(@"C:\Users\airfan\AppData\Roaming\Microsoft\UserSecrets\b29dfa07-5f68-4e34-bf6c-4672b02a0080")).AddJsonFile("secrets.json").Build();
+            //Начини за достъпване на json файла
+            //configurationRoot = new ConfigurationBuilder().SetBasePath(@"C:\Users\airfan\AppData\Roaming\Microsoft\UserSecrets\b29dfa07-5f68-4e34-bf6c-4672b02a0080").AddJsonFile("secrets.json").Build();
+            configurationRoot = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+            //configurationRoot = new ConfigurationBuilder().AddUserSecrets("b29dfa07-5f68-4e34-bf6c-4672b02a0080").Build();
             dbContextOptionsBuilder.UseSqlServer(configurationRoot.GetSection("DefaultConnection:ConnectionString").Value);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
