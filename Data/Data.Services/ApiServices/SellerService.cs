@@ -24,14 +24,14 @@ namespace Data.Services.ApiServices
                     .Include(x => x.Product)
                     .Include(x => x.Seller)
                     .ThenInclude(x => x.User)
+                    .Where(x => x.CreatedAt.Date.Month == month && x.CreatedAt.Date.Year == year)
                     .Select(x => new TopSellerDto()
                                 {
                                     Sellername=x.Seller.User.UserName,
                                     SellerNumber=x.Seller.SellerNumber,
                                    Date=x.CreatedAt
                                 }
-                            )
-                    .Where(x=>x.Date.Month==month && x.Date.Year==year)
+                            )                    
                     .GroupBy(x=>new { x.SellerNumber,x.Sellername })
                     .Select(x=>new {UserIdInStore=x.Key.SellerNumber,TotalSellsInMonth=x.Count(),Name=x.Key.Sellername})
                     .OrderByDescending(x=>x.TotalSellsInMonth)
