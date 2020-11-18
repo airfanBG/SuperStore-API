@@ -47,6 +47,28 @@ namespace Data.DataConnection.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Data.Models.Models.Manufacturer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Manufacturers");
+                });
+
             modelBuilder.Entity("Data.Models.Models.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -60,6 +82,9 @@ namespace Data.DataConnection.Migrations
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ManufacturerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MinimumCountAlert")
                         .HasColumnType("int");
@@ -76,7 +101,47 @@ namespace Data.DataConnection.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ManufacturerId");
+
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "7d21418b-a457-497f-9486-404fb86ad26a",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 8, 57, 429, DateTimeKind.Local).AddTicks(2977),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Ball",
+                            ProductPrice = 1m
+                        },
+                        new
+                        {
+                            Id = "df221151-cb27-4c41-ba27-e4021a644702",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 8, 57, 433, DateTimeKind.Local).AddTicks(3755),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Bat",
+                            ProductPrice = 11m
+                        },
+                        new
+                        {
+                            Id = "b863c825-cdd4-4470-9471-06cd4dcb1309",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 8, 57, 433, DateTimeKind.Local).AddTicks(3819),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Bike",
+                            ProductPrice = 100m
+                        },
+                        new
+                        {
+                            Id = "f4a4d4fa-8336-4c8b-bfb0-7c5f1f0528d1",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 8, 57, 433, DateTimeKind.Local).AddTicks(3828),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "T-shirt",
+                            ProductPrice = 15m
+                        });
                 });
 
             modelBuilder.Entity("Data.Models.Models.Seller", b =>
@@ -143,13 +208,27 @@ namespace Data.DataConnection.Migrations
 
             modelBuilder.Entity("Data.Models.Models.SellerProduct", b =>
                 {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ProductId", "SellerId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SellerId");
 
@@ -191,6 +270,13 @@ namespace Data.DataConnection.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("Data.Models.Models.Product", b =>
+                {
+                    b.HasOne("Data.Models.Models.Manufacturer", "Manufacturer")
+                        .WithMany("Products")
+                        .HasForeignKey("ManufacturerId");
+                });
+
             modelBuilder.Entity("Data.Models.Models.Seller", b =>
                 {
                     b.HasOne("Data.Models.Models.User", "User")
@@ -216,16 +302,12 @@ namespace Data.DataConnection.Migrations
             modelBuilder.Entity("Data.Models.Models.SellerProduct", b =>
                 {
                     b.HasOne("Data.Models.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("SellerProducts")
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("Data.Models.Models.Seller", "Seller")
                         .WithMany("SellerProducts")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SellerId");
                 });
 #pragma warning restore 612, 618
         }

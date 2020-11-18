@@ -33,5 +33,8 @@ namespace Data.Models.Models
             }
         }
         public ICollection<SellerCustomer> SellerCustomers { get; set; }
+        public ICollection<SellerProduct> SellerProducts { get; set; }
+        public string ManufacturerId { get; set; }
+        public Manufacturer Manufacturer { get; set; }
     }
 }

@@ -49,9 +49,6 @@ namespace StoreApi
 
             services.AddScoped<UserService>();
             services.AddScoped<ApplicationDbContext>();
-
-
-
             services.AddSwaggerGen();
         }
 

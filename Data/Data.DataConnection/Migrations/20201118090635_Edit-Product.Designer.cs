@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.DataConnection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201011141509_Inital")]
-    partial class Inital
+    [Migration("20201118090635_Edit-Product")]
+    partial class EditProduct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,28 @@ namespace Data.DataConnection.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Data.Models.Models.Manufacturer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Manufacturers");
+                });
+
             modelBuilder.Entity("Data.Models.Models.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -62,6 +84,9 @@ namespace Data.DataConnection.Migrations
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ManufacturerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MinimumCountAlert")
                         .HasColumnType("int");
@@ -78,7 +103,47 @@ namespace Data.DataConnection.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ManufacturerId");
+
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "c454d748-ef4f-40df-8edf-60b4048a8390",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 6, 35, 49, DateTimeKind.Local).AddTicks(9932),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Ball",
+                            ProductPrice = 1m
+                        },
+                        new
+                        {
+                            Id = "48666a56-f732-4a91-8e12-5946f686c688",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 6, 35, 53, DateTimeKind.Local).AddTicks(4114),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Bat",
+                            ProductPrice = 11m
+                        },
+                        new
+                        {
+                            Id = "f331a6bc-e651-482b-815a-852fc08013e0",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 6, 35, 53, DateTimeKind.Local).AddTicks(4165),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "Bike",
+                            ProductPrice = 100m
+                        },
+                        new
+                        {
+                            Id = "b37a710b-ea03-46fa-b045-6a71bdb4bdda",
+                            CreatedAt = new DateTime(2020, 11, 18, 11, 6, 35, 53, DateTimeKind.Local).AddTicks(4175),
+                            CurrentCountInWarehouse = 10,
+                            MinimumCountAlert = 10,
+                            ProductName = "T-shirt",
+                            ProductPrice = 15m
+                        });
                 });
 
             modelBuilder.Entity("Data.Models.Models.Seller", b =>
@@ -109,7 +174,7 @@ namespace Data.DataConnection.Migrations
                     b.ToTable("Sellers");
                 });
 
-            modelBuilder.Entity("Data.Models.Models.SellerCustomers", b =>
+            modelBuilder.Entity("Data.Models.Models.SellerCustomer", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -126,6 +191,9 @@ namespace Data.DataConnection.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
 
@@ -133,9 +201,40 @@ namespace Data.DataConnection.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("SellerId");
 
                     b.ToTable("SellerCustomers");
+                });
+
+            modelBuilder.Entity("Data.Models.Models.SellerProduct", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("SellerProduct");
                 });
 
             modelBuilder.Entity("Data.Models.Models.User", b =>
@@ -173,6 +272,13 @@ namespace Data.DataConnection.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("Data.Models.Models.Product", b =>
+                {
+                    b.HasOne("Data.Models.Models.Manufacturer", "Manufacturer")
+                        .WithMany("Products")
+                        .HasForeignKey("ManufacturerId");
+                });
+
             modelBuilder.Entity("Data.Models.Models.Seller", b =>
                 {
                     b.HasOne("Data.Models.Models.User", "User")
@@ -180,14 +286,29 @@ namespace Data.DataConnection.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Data.Models.Models.SellerCustomers", b =>
+            modelBuilder.Entity("Data.Models.Models.SellerCustomer", b =>
                 {
                     b.HasOne("Data.Models.Models.Customer", "Customer")
                         .WithMany("SellerCustomers")
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("Data.Models.Models.Product", null)
+                        .WithMany("SellerCustomers")
+                        .HasForeignKey("ProductId");
+
                     b.HasOne("Data.Models.Models.Seller", "Seller")
                         .WithMany("SellerCustomers")
+                        .HasForeignKey("SellerId");
+                });
+
+            modelBuilder.Entity("Data.Models.Models.SellerProduct", b =>
+                {
+                    b.HasOne("Data.Models.Models.Product", "Product")
+                        .WithMany("SellerProducts")
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("Data.Models.Models.Seller", "Seller")
+                        .WithMany("SellerProducts")
                         .HasForeignKey("SellerId");
                 });
 #pragma warning restore 612, 618

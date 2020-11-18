@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -22,6 +23,7 @@ namespace Data.DataConnection
         public DbSet<Product> Products { get; set; }
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<SellerCustomer> SellerCustomers { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
@@ -30,8 +32,53 @@ namespace Data.DataConnection
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SellerProduct>().HasKey(x => new { x.ProductId, x.SellerId });
+            // modelBuilder.Entity<SellerProduct>().HasKey(x => new { x.ProductId, x.SellerId });
 
+          
+            List<Product> products = new List<Product>()
+             {
+                 new Product()
+                 {
+                     ProductName="Ball",
+                     ProductPrice=1,
+                     CurrentCountInWarehouse=10,
+                     CreatedAt=DateTime.Now
+                 },
+                  new Product()
+                 {
+                     ProductName="Bat",
+                     ProductPrice=11,
+                     CurrentCountInWarehouse=10,
+                     CreatedAt=DateTime.Now
+                 }, new Product()
+                 {
+                     ProductName="Bike",
+                     ProductPrice=100,
+                     CurrentCountInWarehouse=10,
+                     CreatedAt=DateTime.Now
+                 }, new Product()
+                 {
+                     ProductName="T-shirt",
+                     ProductPrice=15,
+                     CurrentCountInWarehouse=10,
+                     CreatedAt=DateTime.Now
+                 }
+             };
+            
+            //Manufacturer manufacturer = new Manufacturer()
+            //{
+            //    Name = "Test",
+               
+            //};
+            //modelBuilder.Entity<Manufacturer>(x =>
+            //{
+            //    x.HasData(manufacturer);
+            //    x.OwnsMany(x => x.Products).HasData(products);
+            //});
+
+
+            modelBuilder.Entity<Product>().HasData(products);
+            base.OnModelCreating(modelBuilder);
         }
         private void ApplyChanges()
         {
