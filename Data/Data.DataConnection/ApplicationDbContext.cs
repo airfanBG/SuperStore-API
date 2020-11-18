@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Data.DataConnection
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : DbContext
     {
         private IConfigurationRoot configurationRoot;
 
@@ -33,48 +33,53 @@ namespace Data.DataConnection
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // modelBuilder.Entity<SellerProduct>().HasKey(x => new { x.ProductId, x.SellerId });
+            //Добавено 18.11
+            Manufacturer manufacturer = new Manufacturer()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Test",
+                CreatedAt = DateTime.Now
+            };
 
-          
             List<Product> products = new List<Product>()
              {
                  new Product()
                  {
+                      Id=Guid.NewGuid().ToString(),
                      ProductName="Ball",
                      ProductPrice=1,
                      CurrentCountInWarehouse=10,
-                     CreatedAt=DateTime.Now
+                     CreatedAt=DateTime.Now,
+                     ManufacturerId=manufacturer.Id
                  },
                   new Product()
                  {
+                       Id=Guid.NewGuid().ToString(),
                      ProductName="Bat",
                      ProductPrice=11,
                      CurrentCountInWarehouse=10,
-                     CreatedAt=DateTime.Now
+                     CreatedAt=DateTime.Now,
+                      ManufacturerId=manufacturer.Id
                  }, new Product()
                  {
+                      Id=Guid.NewGuid().ToString(),
                      ProductName="Bike",
                      ProductPrice=100,
                      CurrentCountInWarehouse=10,
-                     CreatedAt=DateTime.Now
+                     CreatedAt=DateTime.Now,
+                      ManufacturerId=manufacturer.Id
                  }, new Product()
                  {
+                     Id=Guid.NewGuid().ToString(),
                      ProductName="T-shirt",
                      ProductPrice=15,
                      CurrentCountInWarehouse=10,
-                     CreatedAt=DateTime.Now
+                     CreatedAt=DateTime.Now,
+                      ManufacturerId=manufacturer.Id
                  }
              };
-            
-            //Manufacturer manufacturer = new Manufacturer()
-            //{
-            //    Name = "Test",
-               
-            //};
-            //modelBuilder.Entity<Manufacturer>(x =>
-            //{
-            //    x.HasData(manufacturer);
-            //    x.OwnsMany(x => x.Products).HasData(products);
-            //});
+
+            modelBuilder.Entity<Manufacturer>().HasData(manufacturer);
 
 
             modelBuilder.Entity<Product>().HasData(products);
@@ -86,9 +91,9 @@ namespace Data.DataConnection
 
             foreach (var entry in entries)
             {
-                var entity =(IAuditInfo) entry.Entity;
+                var entity = (IAuditInfo)entry.Entity;
 
-                if (entry.State==EntityState.Added)
+                if (entry.State == EntityState.Added)
                 {
                     entity.CreatedAt = DateTime.UtcNow;
                 }
@@ -114,7 +119,7 @@ namespace Data.DataConnection
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             this.ApplyChanges();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess,cancellationToken);
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

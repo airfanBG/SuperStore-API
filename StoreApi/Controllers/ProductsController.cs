@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,18 +16,19 @@ namespace StoreApi.Controllers
     public class ProductsController : ControllerBase
     {
         private IWebHostEnvironment webHostEnvironment;
-        private IApplicationBuilder applicationBuilder;
-        public ProductsController(IWebHostEnvironment env, IApplicationBuilder app)
+        private IConfiguration _configuration;
+        public ProductsController(IWebHostEnvironment env,IConfiguration configuration)
         {
             webHostEnvironment = env;
-            applicationBuilder = app;
+         
+            _configuration = configuration;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
-          
-            return Ok();
+            var res=_configuration.GetSection("Test").Value;
+            return Ok(res);
         }
        [Route("getfirst")]
        [HttpGet]
