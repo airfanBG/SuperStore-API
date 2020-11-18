@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +16,21 @@ namespace WebApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IConfiguration config;
-
+        private readonly ILogger<ProductController> _logger;
         public IWebHostBuilder WebHostBuilder { get; }
-        public ProductController(IConfiguration root)
+        public ProductController(IConfiguration root,ILogger<ProductController> logger)
         {
             this.config = root;
+            this._logger = logger;
         }
 
         public IActionResult Get()
         {
-            var value=config.GetSection("Test").Value;
-            return Ok();
+            _logger.LogDebug(User.Identity.Name);
+            _logger.LogInformation(User.Identity.Name);
+
+            var value=config.GetSection("DevTest").Value;
+            return Ok(value);
         }
        
     }
