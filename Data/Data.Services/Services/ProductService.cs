@@ -32,8 +32,8 @@ namespace Data.Services.Services
                         Date = x.CreatedAt
                     })
                     .GroupBy(x => new { x.SellerNumber, x.SellerName })
-                    .Select(x => new { UserIdInStore = x.Key.SellerNumber, TotalSoldProducts = x.Count(), Name = x.Key.SellerName })
-                    .OrderByDescending(x => x.TotalSoldProducts)
+                    //.Select(x => new { UserIdInStore = x.Key.SellerNumber, TotalSoldProducts = x.Count(), Name = x.Key.SellerName })
+                    .OrderByDescending(x => x.Count())
                     .ToList();
             }
         }
