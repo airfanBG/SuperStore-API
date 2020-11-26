@@ -14,6 +14,5 @@ namespace Data.DataConnection.Repositories.Interfaces
         T Find(string id);
         void Update(T entity);
         int CommitChanges();
-
     }
 }

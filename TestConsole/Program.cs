@@ -1,5 +1,7 @@
 ﻿
 using Data.DataConnection;
+using Data.DataConnection.Repositories.Implementations;
+using Data.Models.Models;
 using Data.Services.Identity;
 using Data.Services.Services;
 using System;
@@ -27,6 +29,7 @@ namespace TestConsole
             // });
             ProductService productService = new ProductService(new ApplicationDbContext());
             productService.GetTopSellers(1, 1);
+            UnitOfWorkContext unitOfWorkContext = new UnitOfWorkContext(new ApplicationDbContext());
            
         }
 

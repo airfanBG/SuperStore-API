@@ -11,7 +11,7 @@ namespace Data.DataConnection.Repositories.Implementations
     public class UnitOfWorkContext : IUnitOfWorkContext
     {
         private Dictionary<Type, object> repositories;
-        private DbContext Context;
+        public DbContext Context;
         public UnitOfWorkContext(DbContext context)
         {
             Context = context;

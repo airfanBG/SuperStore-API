@@ -1,8 +1,10 @@
 using Data.DataConnection;
 using Data.Services.Identity;
 using Data.Services.Interfaces;
+using Data.Services.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +32,9 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<ApplicationDbContext>();
+            services.AddScoped<ProductService>();
+            
             //services.AddScoped<ILogger>
         }
 
@@ -44,10 +49,13 @@ namespace WebApi
             logger.AddFile(Path.Combine(Directory.GetCurrentDirectory(),"LogFile.txt"));
 
             app.UseHttpsRedirection();
+            //app.UseHsts();
 
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
+
 
             app.UseEndpoints(endpoints =>
             {
