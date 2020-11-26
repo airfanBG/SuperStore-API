@@ -7,9 +7,12 @@ namespace Data.Services.DtoModels
 {
     public class UserRegisterDto
     {
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
         [Compare("Password")]
+        [Required]
         public string ConfirmPassword { get; set; }
     }
 }

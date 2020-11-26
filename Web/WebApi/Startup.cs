@@ -34,8 +34,9 @@ namespace WebApi
             services.AddControllers();
             services.AddScoped<ApplicationDbContext>();
             services.AddScoped<ProductService>();
+            services.AddScoped<UserService>();
             
-            //services.AddScoped<ILogger>
+           
         }
 
 

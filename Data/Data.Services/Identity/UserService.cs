@@ -134,8 +134,7 @@ namespace Data.Services.Identity
         {
             bool result =
                            model.Password.Any(c => char.IsLetter(c)) &&
-                           model.Password.Any(c => char.IsDigit(c)) &&
-                           model.Password.Any(c => char.IsSymbol(c));
+                           model.Password.Any(c => char.IsDigit(c)) ;
             if (result==true)
             {
                 if (model.Password==model.ConfirmPassword)
