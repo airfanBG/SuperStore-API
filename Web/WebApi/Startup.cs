@@ -52,7 +52,7 @@ namespace WebApi
             app.UseHttpsRedirection();
             //app.UseHsts();
 
-            app.UseRouting();
+           app.UseRouting();
 
             app.UseAuthorization();
             app.UseAuthentication();
