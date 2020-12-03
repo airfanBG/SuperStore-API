@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.Services.DtoModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,24 +18,46 @@ namespace StoreApi.Controllers
     {
         private IWebHostEnvironment webHostEnvironment;
         private IConfiguration _configuration;
-        public ProductsController(IWebHostEnvironment env,IConfiguration configuration)
+        public ProductsController(IWebHostEnvironment env, IConfiguration configuration)
         {
             webHostEnvironment = env;
-         
+
             _configuration = configuration;
         }
-        //[Authorize]
+        //[HttpGet]
+        //public IActionResult GetProduct()
+        //{
+        //    return Ok();
+        //}
+        //api/products/{id}
+        [HttpGet("{id}")]
+        public IActionResult GetProduct(int id)
+        {
+            return Ok(id);
+        }
+        //" " 
         [HttpGet]
-        public IActionResult GetAll()
+        [Route("")]
+        [Route("idd/{id}")]
+        [Route("getproducts/{id}")]
+        
+        public IActionResult GetProductById(int id)
         {
-            var res=_configuration.GetSection("Test").Value;
-            return Ok(res);
+            return Ok(id);
         }
-       [Route("getfirst")]
-       [HttpGet]
-        public IActionResult GetFirst()
-        {
-            return Ok("first");
-        }
+        //[Authorize]
+        // [HttpGet]
+        // public IActionResult GetAll()
+        // {
+        //     var res=_configuration.GetSection("Test").Value;
+        //     return Ok(res);
+        // }
+        //[Route("getfirst")]
+        //[HttpGet]
+        // public IActionResult GetFirst()
+        // {
+        //     return Ok("first");
+        // }
+
     }
 }

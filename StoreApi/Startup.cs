@@ -67,7 +67,8 @@ namespace StoreApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
+            //www.localhost:5001/api/product HttpGet
+            //www.localhost:5001/api/product/id HttpPost
             
             app.UseRouting();
 
