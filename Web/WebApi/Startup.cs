@@ -53,6 +53,7 @@ namespace WebApi
             //app.UseHsts();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
             app.UseAuthentication();
