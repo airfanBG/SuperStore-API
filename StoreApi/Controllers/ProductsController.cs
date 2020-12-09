@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,15 +22,10 @@ namespace StoreApi.Controllers
         public ProductsController(IWebHostEnvironment env, IConfiguration configuration)
         {
             webHostEnvironment = env;
-
+           
             _configuration = configuration;
         }
-        //[HttpGet]
-        //public IActionResult GetProduct()
-        //{
-        //    return Ok();
-        //}
-        //api/products/{id}
+       
         [HttpGet("{id}")]
         public IActionResult GetProduct(int id)
         {
@@ -45,19 +41,18 @@ namespace StoreApi.Controllers
         {
             return Ok(id);
         }
-        //[Authorize]
-        // [HttpGet]
-        // public IActionResult GetAll()
-        // {
-        //     var res=_configuration.GetSection("Test").Value;
-        //     return Ok(res);
-        // }
-        //[Route("getfirst")]
-        //[HttpGet]
-        // public IActionResult GetFirst()
-        // {
-        //     return Ok("first");
-        // }
-
+        [HttpPost]
+        [Route("upload")]
+        public async Task<string> UploadImage([FromForm]IFormFile file)
+        {
+            string fileName = file.FileName;
+            string path = Path.Combine(webHostEnvironment.WebRootPath,"Images",fileName);
+            using (var stream=new FileStream(path,FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            return fileName;
+        }
+        
     }
 }

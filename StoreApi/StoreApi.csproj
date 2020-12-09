@@ -13,5 +13,9 @@
     <ProjectReference Include="..\Data\Data.Services\Data.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
 
 </Project>

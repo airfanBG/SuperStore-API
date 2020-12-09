@@ -53,8 +53,9 @@ namespace StoreApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IWebHostBuilder builder)
         {
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -71,6 +72,7 @@ namespace StoreApi
             //www.localhost:5001/api/product/id HttpPost
             
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();
