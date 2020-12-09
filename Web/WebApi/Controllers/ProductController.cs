@@ -27,7 +27,8 @@ namespace WebApi.Controllers
             this._logger = logger;
             this.service = service;
         }
-
+        //api/product/get
+        [HttpGet]
         public IActionResult Get()
         {
             _logger.LogDebug(User.Identity.Name);
@@ -37,6 +38,25 @@ namespace WebApi.Controllers
             service.GetTopSellers(1010, 1);
             return Ok(value);
         }
-       
+        //api/product/getall/a HttpGet Action:GetAll(int a)
+
+        //api/product  HttpGet Action: GetAll()
+        //api/product  HttpPost Action: GetAllSecond()
+
+        //api/product/1 HttpGet Action:GetAll(int a)
+
+        //api/product/getall HttpGet Action:GetAllSecond()
+        [HttpGet("{a}")]
+        //[Route("getall")]
+        public IActionResult GetAll(int a)
+        {
+            return Ok();
+        }
+        //[HttpGet]
+        //[Route("getall")]
+        //public IActionResult GetAllSecond()
+        //{
+        //    return Ok();
+        //}
     }
 }
