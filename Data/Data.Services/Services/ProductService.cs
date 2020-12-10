@@ -1,5 +1,6 @@
 ﻿using Data.DataConnection;
 using Data.Services.DtoModels;
+using Data.Services.Map;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,22 +21,30 @@ namespace Data.Services.Services
         {
             using (applicationDb)
             {
-                //var res = applicationDb.SellerProduct
-                //    .Include(x => x.Product)
-                //    .Include(x => x.Seller)
-                //    .ThenInclude(x => x.User)
-                //    .Where(x => x.CreatedAt.Year == year && x.CreatedAt.Month == month)
-                //    .Select(x => new TopSellerDto()
-                //    {
-                //        SellerName = x.Seller.User.UserName,
-                //        SellerNumber = x.Seller.SellerNumber,
-                //        Date = x.CreatedAt
-                //    })
-                //    .GroupBy(x => new { x.SellerNumber, x.SellerName })
-                //    //.Select(x => new { UserIdInStore = x.Key.SellerNumber, TotalSoldProducts = x.Count(), Name = x.Key.SellerName })
-                //    .OrderByDescending(x => x.Count())
-                //    .ToList();
+                var res = applicationDb.SellerProduct
+                    .Include(x => x.Product)
+                    .Include(x => x.Seller)
+                    .ThenInclude(x => x.User)
+                    .Where(x => x.CreatedAt.Year == year && x.CreatedAt.Month == month)
+                    .Select(x => new TopSellerDto()
+                    {
+                        SellerName = x.Seller.User.UserName,
+                        SellerNumber = x.Seller.SellerNumber,
+                        Date = x.CreatedAt
+                    })
+                    .GroupBy(x => new { x.SellerNumber, x.SellerName })
+                    //.Select(x => new { UserIdInStore = x.Key.SellerNumber, TotalSoldProducts = x.Count(), Name = x.Key.SellerName })
+                    .OrderByDescending(x => x.Count())
+                    .ToList();
             }
+        }
+        public List<ProductDto> GetAllProducts()
+        {
+            using (applicationDb)
+            {
+                var res = applicationDb.Products.Include(x => x.Images).Select(x => MapperConfigurator.Mapper.Map<ProductDto>(x)).ToList();
+                return res;
+            } 
         }
     }
 }

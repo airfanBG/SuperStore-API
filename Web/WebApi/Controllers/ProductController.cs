@@ -31,22 +31,24 @@ namespace WebApi.Controllers
             this.webHost = webHost;
         }
         //api/product/get
+        //[HttpGet]
+        //public IActionResult Get()
+        //{
+        //    _logger.LogDebug(User.Identity.Name);
+        //    _logger.LogInformation(User.Identity.Name);
+
+        //    var value = config.GetSection("DevTest").Value;
+        //    service.GetTopSellers(1010, 1);
+        //    return Ok(value);
+        //}
+
         [HttpGet]
-        public IActionResult Get()
-        {
-            _logger.LogDebug(User.Identity.Name);
-            _logger.LogInformation(User.Identity.Name);
-
-            var value = config.GetSection("DevTest").Value;
-            service.GetTopSellers(1010, 1);
-            return Ok(value);
-        }
-
-        [HttpGet("{a}")]
+        [Route("allproducts")]
         //[Route("getall")]
-        public IActionResult GetAll(int a)
+        public IActionResult GetAll()
         {
-            return Ok();
+            var res = service.GetAllProducts();
+            return Ok(res);
         }
         [HttpPost]
         [Route("upload")]
