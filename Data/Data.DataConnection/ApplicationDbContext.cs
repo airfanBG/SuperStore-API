@@ -148,6 +148,8 @@ namespace Data.DataConnection
             modelBuilder.Entity<SellerProduct>().HasData(sellerProducts);
 
             modelBuilder.Entity<Product>().HasData(products);
+
+
             base.OnModelCreating(modelBuilder);
         }
         private void ApplyChanges()
