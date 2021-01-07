@@ -40,7 +40,7 @@ namespace Data.DataConnection
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             SeedData seedData = new SeedData();
-
+           
             base.OnModelCreating(seedData.Seed(modelBuilder));
         }
         private void ApplyChanges()

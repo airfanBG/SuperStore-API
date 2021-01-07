@@ -13,7 +13,7 @@ namespace Data.Services.Map
           {
               var config = new MapperConfiguration(cnf =>
                 {
-                    //cnf.ShouldMapProperty = p => p.GetMethod.IsStatic || p.GetMethod.IsAssembly;
+                    cnf.ShouldMapProperty = p => p.GetMethod.IsStatic || p.GetMethod.IsAssembly;
                     
                     cnf.AddProfile<MapperProfile>();
                 });

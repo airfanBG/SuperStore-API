@@ -1,4 +1,5 @@
 ﻿using Data.DataConnection;
+using Data.Models.Models;
 using Data.Services.DtoModels;
 using Data.Services.Map;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,7 @@ namespace Data.Services.Services
             using (applicationDb)
             {
                 var res = applicationDb.Products.Include(x => x.Images).Select(x => MapperConfigurator.Mapper.Map<ProductDto>(x)).ToList();
+                
                 return res;
             } 
         }

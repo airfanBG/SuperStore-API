@@ -11,7 +11,7 @@ namespace Data.DataConnection.Seed
         public ModelBuilder Seed(ModelBuilder modelBuilder)
         {
             // modelBuilder.Entity<SellerProduct>().HasKey(x => new { x.ProductId, x.SellerId });
-            List<User> users = new List<User>()
+           List<User> users = new List<User>()
            {
                new User()
                {
@@ -20,6 +20,7 @@ namespace Data.DataConnection.Seed
                },
                new User()
                {
+                  
                    UserName="Ginka",
                    Password="123"
                },
@@ -29,6 +30,7 @@ namespace Data.DataConnection.Seed
                    Password="123"
                }
            };
+            
             List<Seller> sellers = new List<Seller>()
             {
                 new Seller()
